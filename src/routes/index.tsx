@@ -9,9 +9,7 @@ export type PublicStackParamList = {
 };
 
 function NavigationRoutes() {
-  const [user, setUser] = useState({
-    name: '',
-  });
+  const [user, setUser] = useState(undefined);
 
   const Routes = useCallback(() => {
     if (!user) return <PublicRoutes />;
