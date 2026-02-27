@@ -17,7 +17,7 @@ function AppButton({
   iconName,
   ...rest
 }: PropsWithChildren<AppButtonParams>) {
-  const isFill = (mode = 'fill');
+  const isFill = mode === 'fill';
 
   return (
     <TouchableOpacity
