@@ -29,7 +29,7 @@ function LoginForm() {
         name="password"
         label="senha"
         placeholder="sua senha"
-        leftIconName="mail-outline"
+        leftIconName="lock-outline"
         secureTextEntry
       />
     </>
