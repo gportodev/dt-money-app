@@ -1,3 +1,4 @@
+import { AppButton } from '@/components/AppButton';
 import { AppInput } from '@/components/AppInput';
 import { useForm } from 'react-hook-form';
 import { Text } from 'react-native';
@@ -28,10 +29,12 @@ function LoginForm() {
         control={control}
         name="password"
         label="senha"
-        placeholder="sua senha"
+        placeholder="Sua senha"
         leftIconName="lock-outline"
         secureTextEntry
       />
+
+      <AppButton iconName="arrow-forward">Login</AppButton>
     </>
   );
 }
