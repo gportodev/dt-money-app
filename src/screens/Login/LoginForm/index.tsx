@@ -35,7 +35,7 @@ function LoginForm() {
         control={control}
         name="email"
         label="email"
-        placeholder="mail@exemplo.br"
+        placeholder="mail@example.br"
         leftIconName="mail-outline"
       />
 
