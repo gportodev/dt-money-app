@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 import { colors } from '@/shared/colors';
 import clsx from 'clsx';
+import { ErrorMessage } from '../ErrorMessage';
 
 interface AppInputParams<T extends FieldValues> extends TextInputProps {
   control: Control<T>;
@@ -41,7 +42,6 @@ function AppInput<T extends FieldValues>({
       control={control}
       name={name}
       render={({ field: { onChange, value }, fieldState: { error } }) => {
-        console.log(error);
         return (
           <View className="w-full mt-4">
             {label && (
@@ -87,6 +87,8 @@ function AppInput<T extends FieldValues>({
                 </TouchableOpacity>
               )}
             </TouchableOpacity>
+
+            {error && <ErrorMessage>{error.message}</ErrorMessage>}
           </View>
         );
       }}
