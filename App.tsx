@@ -5,7 +5,7 @@ import NavigationRoutes from '@/routes';
 export default function App() {
   return (
     <AuthContextProvider>
-      <NavigationRoutes />;
+      <NavigationRoutes />
     </AuthContextProvider>
   );
 }
