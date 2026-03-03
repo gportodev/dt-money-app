@@ -28,7 +28,11 @@ export function AuthContextProvider({ children }: PropsWithChildren) {
     setToken(token);
   };
 
-  const handleRegister = async (formData: FormRegisterParams) => {};
+  const handleRegister = async (formData: FormRegisterParams) => {
+    const { token } = await authService.resgisterUser(formData);
+    setUser(user);
+    setToken(token);
+  };
 
   const handleLogout = () => {};
 

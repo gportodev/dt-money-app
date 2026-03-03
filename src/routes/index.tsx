@@ -1,6 +1,6 @@
 import { NavigationContainer } from '@react-navigation/native';
 import { PublicRoutes } from './PublicRoutes';
-import { useCallback, useState } from 'react';
+import { useCallback } from 'react';
 import { PrivateRoutes } from './PrivateRoutes';
 import { useAuthContext } from '@/context/auth.context';
 
@@ -13,9 +13,11 @@ function NavigationRoutes() {
   const { token, user } = useAuthContext();
 
   const Routes = useCallback(() => {
-    if (!user || !token) return <PublicRoutes />;
-
-    return <PrivateRoutes />;
+    if (!user || !token) {
+      return <PublicRoutes />;
+    } else {
+      return <PrivateRoutes />;
+    }
   }, [user, token]);
 
   return (
