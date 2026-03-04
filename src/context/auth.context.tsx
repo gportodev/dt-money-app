@@ -45,7 +45,11 @@ export function AuthContextProvider({ children }: PropsWithChildren) {
     setToken(token);
   };
 
-  const handleLogout = () => {};
+  const handleLogout = async () => {
+    await AsyncStorage.clear();
+    setToken(null);
+    setUser(null);
+  };
 
   const restoreUserSession = async () => {
     const userData = await AsyncStorage.getItem('dt-money-user');
