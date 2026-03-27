@@ -4,6 +4,7 @@ import { colors } from '@/shared/colors';
 import { MaterialIcons } from '@expo/vector-icons';
 import React from 'react';
 import { View, Image, TouchableOpacity, Text } from 'react-native';
+import { NewTransaction } from '../NewTransaction';
 
 function AppHeader() {
   const { handleLogout } = useAuthContext();
@@ -27,9 +28,7 @@ function AppHeader() {
       </View>
 
       <TouchableOpacity
-        onPress={() =>
-          openBottomSheet(<Text>Formulario da nova transação</Text>, 0)
-        }
+        onPress={() => openBottomSheet(<NewTransaction />, 0)}
         className="bg-accent-brand w-[130px] items-center justify-center rounded-xl h-[50px]"
       >
         <Text className="text-white font-bold text-sm">Nova transação</Text>
