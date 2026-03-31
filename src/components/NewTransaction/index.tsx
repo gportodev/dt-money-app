@@ -6,6 +6,7 @@ import React, { useState } from 'react';
 import { Text, TextInput, TouchableOpacity, View } from 'react-native';
 import CurrencyInput from 'react-native-currency-input';
 import { TransactionTypeSelector } from '../SelectType';
+import { SelectCategoryModal } from '../SelectCategoryModal';
 
 function NewTransaction() {
   const [transaction, setTransaction] = useState<CreateTransactionInterface>({
@@ -53,6 +54,11 @@ function NewTransaction() {
           maxValue={1000000000}
           onChangeValue={value => setTransactionData('value', value ?? 0)}
           className="text-white text-lg h-[50px] bg-background-primary my-2 rounded-[6] pl-4"
+        />
+
+        <SelectCategoryModal
+          selectedCategory={transaction.categoryId}
+          onSelect={categoryId => setTransactionData('categoryId', categoryId)}
         />
 
         <TransactionTypeSelector
