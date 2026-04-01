@@ -10,6 +10,7 @@ import { SelectCategoryModal } from '../SelectCategoryModal';
 import { transactionSchema } from './schema';
 import * as Yup from 'yup';
 import { AppButton } from '../AppButton';
+import { ErrorMessage } from '../ErrorMessage';
 
 type ValidaditionErrorsTypes = Record<keyof CreateTransactionInterface, string>;
 
@@ -73,6 +74,10 @@ function NewTransaction() {
           className="text-white text-lg h-[50px] bg-background-primary my-2 rounded-[6] pl-4"
         />
 
+        {validaditionErrors?.description && (
+          <ErrorMessage>{validaditionErrors.description}</ErrorMessage>
+        )}
+
         <CurrencyInput
           value={transaction.value}
           prefix="R$ "
@@ -85,15 +90,27 @@ function NewTransaction() {
           className="text-white text-lg h-[50px] bg-background-primary my-2 rounded-[6] pl-4"
         />
 
+        {validaditionErrors?.value && (
+          <ErrorMessage>{validaditionErrors.value}</ErrorMessage>
+        )}
+
         <SelectCategoryModal
           selectedCategory={transaction.categoryId}
           onSelect={categoryId => setTransactionData('categoryId', categoryId)}
         />
 
+        {validaditionErrors?.categoryId && (
+          <ErrorMessage>{validaditionErrors.categoryId}</ErrorMessage>
+        )}
+
         <TransactionTypeSelector
           typeId={transaction.typeId}
           setTransactionType={typeId => setTransactionData('typeId', typeId)}
         />
+
+        {validaditionErrors?.typeId && (
+          <ErrorMessage>{validaditionErrors.typeId}</ErrorMessage>
+        )}
 
         <View className="my-4">
           <AppButton onPress={handleCreateTransaction}>Registrar</AppButton>
