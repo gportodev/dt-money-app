@@ -7,6 +7,11 @@ import { Text, TextInput, TouchableOpacity, View } from 'react-native';
 import CurrencyInput from 'react-native-currency-input';
 import { TransactionTypeSelector } from '../SelectType';
 import { SelectCategoryModal } from '../SelectCategoryModal';
+import { transactionSchema } from './schema';
+import * as Yup from 'yup';
+import { AppButton } from '../AppButton';
+
+type ValidaditionErrorsTypes = Record<keyof CreateTransactionInterface, string>;
 
 function NewTransaction() {
   const [transaction, setTransaction] = useState<CreateTransactionInterface>({
@@ -15,6 +20,30 @@ function NewTransaction() {
     typeId: 0,
     value: 0,
   });
+
+  const [validaditionErrors, setValidationErrors] =
+    useState<ValidaditionErrorsTypes>();
+
+  const handleCreateTransaction = async () => {
+    try {
+      await transactionSchema.validate(transaction, {
+        abortEarly: false,
+      });
+    } catch (error) {
+      if (error instanceof Yup.ValidationError) {
+        const errors = {} as ValidaditionErrorsTypes;
+
+        error.inner.forEach(err => {
+          if (err.path) {
+            errors[err.path as keyof CreateTransactionInterface] = err.message;
+          }
+        });
+        setValidationErrors(errors);
+      }
+    }
+  };
+
+  console.log(validaditionErrors);
 
   const setTransactionData = (
     key: keyof CreateTransactionInterface,
@@ -65,6 +94,10 @@ function NewTransaction() {
           typeId={transaction.typeId}
           setTransactionType={typeId => setTransactionData('typeId', typeId)}
         />
+
+        <View className="my-4">
+          <AppButton onPress={handleCreateTransaction}>Registrar</AppButton>
+        </View>
       </View>
     </View>
   );
