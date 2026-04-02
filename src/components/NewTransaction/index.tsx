@@ -3,7 +3,13 @@ import { colors } from '@/shared/colors';
 import { CreateTransactionInterface } from '@/shared/interfaces/https/create-transaction-request';
 import { MaterialIcons } from '@expo/vector-icons';
 import React, { useState } from 'react';
-import { Text, TextInput, TouchableOpacity, View } from 'react-native';
+import {
+  ActivityIndicator,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import CurrencyInput from 'react-native-currency-input';
 import { TransactionTypeSelector } from '../SelectType';
 import { SelectCategoryModal } from '../SelectCategoryModal';
@@ -11,10 +17,18 @@ import { transactionSchema } from './schema';
 import * as Yup from 'yup';
 import { AppButton } from '../AppButton';
 import { ErrorMessage } from '../ErrorMessage';
+import { useTransactionContext } from '@/context/transaction.context';
+import { useErrorHandler } from '@/shared/hooks/useErrorHandler';
 
 type ValidaditionErrorsTypes = Record<keyof CreateTransactionInterface, string>;
 
 function NewTransaction() {
+  const { closeBottomSheet } = useBottomSheetContext();
+  const { createTransaction } = useTransactionContext();
+  const { handleError } = useErrorHandler();
+
+  const [loading, setLoading] = useState(false);
+
   const [transaction, setTransaction] = useState<CreateTransactionInterface>({
     categoryId: 0,
     description: '',
@@ -27,9 +41,12 @@ function NewTransaction() {
 
   const handleCreateTransaction = async () => {
     try {
+      setLoading(true);
       await transactionSchema.validate(transaction, {
         abortEarly: false,
       });
+      await createTransaction(transaction);
+      closeBottomSheet();
     } catch (error) {
       if (error instanceof Yup.ValidationError) {
         const errors = {} as ValidaditionErrorsTypes;
@@ -40,11 +57,13 @@ function NewTransaction() {
           }
         });
         setValidationErrors(errors);
+      } else {
+        handleError(error, 'Falha ao criar transação');
       }
+    } finally {
+      setLoading(false);
     }
   };
-
-  console.log(validaditionErrors);
 
   const setTransactionData = (
     key: keyof CreateTransactionInterface,
@@ -52,8 +71,6 @@ function NewTransaction() {
   ) => {
     setTransaction(prevData => ({ ...prevData, [key]: value }));
   };
-
-  const { closeBottomSheet } = useBottomSheetContext();
 
   return (
     <View className="px-8 py-5">
@@ -113,7 +130,9 @@ function NewTransaction() {
         )}
 
         <View className="my-4">
-          <AppButton onPress={handleCreateTransaction}>Registrar</AppButton>
+          <AppButton onPress={handleCreateTransaction}>
+            {loading ? <ActivityIndicator color={colors.white} /> : 'Registrar'}
+          </AppButton>
         </View>
       </View>
     </View>
