@@ -1,18 +1,27 @@
 import { TransactionCategory } from '@/shared/interfaces/https/trasanction-category-response';
-import { createContext, PropsWithChildren, useContext, useState } from 'react';
+import {
+  createContext,
+  PropsWithChildren,
+  useCallback,
+  useContext,
+  useState,
+} from 'react';
 import * as transactionService from '@/shared/services/dt-money/transaction.service';
 import { CreateTransactionInterface } from '@/shared/interfaces/https/create-transaction-request';
+import { Transaction } from '@/shared/interfaces/transaction';
 
 export type TransactionContextType = {
   fetchCategories: () => Promise<void>;
   categories: TransactionCategory[];
   createTransaction: (transaction: CreateTransactionInterface) => Promise<void>;
+  fetchTransactions: () => Promise<void>;
 };
 
 export const TransactionContext = createContext({} as TransactionContextType);
 
 export function TransactionContextProvider({ children }: PropsWithChildren) {
   const [categories, setCategories] = useState<TransactionCategory[]>([]);
+  const [transactions, setTransactions] = useState<Transaction[]>([]);
 
   const fetchCategories = async () => {
     const categoriesResponse =
@@ -24,12 +33,24 @@ export function TransactionContextProvider({ children }: PropsWithChildren) {
     await transactionService.createTransaction(transaction);
   };
 
+  const fetchTransactions = useCallback(async () => {
+    const transactionResponse = await transactionService.getTransactions({
+      page: 1,
+      perPage: 10,
+    });
+
+    console.log(transactionResponse);
+
+    setTransactions(transactionResponse.data);
+  }, []);
+
   return (
     <TransactionContext.Provider
       value={{
         fetchCategories,
         categories,
         createTransaction,
+        fetchTransactions,
       }}
     >
       {children}

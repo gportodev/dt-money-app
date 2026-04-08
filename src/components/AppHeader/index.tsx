@@ -11,7 +11,7 @@ function AppHeader() {
   const { openBottomSheet } = useBottomSheetContext();
 
   return (
-    <View className="w-full flex-row p-8 justify-between">
+    <View className="w-full flex-row p-8 justify-between bg-background-primary">
       <View>
         <Image
           source={require('@/assets/Logo.png')}
