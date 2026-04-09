@@ -18,7 +18,6 @@ function Home() {
   const handleFetchCategories = async () => {
     try {
       await fetchCategories();
-      await fetchTransactions();
     } catch (error) {
       handleError(error, 'Falha ao buscar as categorias');
     }
@@ -26,13 +25,14 @@ function Home() {
 
   useEffect(() => {
     (async () => {
-      await handleFetchCategories();
+      await Promise.all([handleFetchCategories(), fetchTransactions()]);
     })();
   }, []);
 
   return (
-    <SafeAreaView className="flex-1 bg-background-secondary">
+    <SafeAreaView className="flex-1 bg-background-primary">
       <FlatList
+        className="bg-background-secondary"
         ListHeaderComponent={ListHeader}
         data={[]}
         renderItem={() => <></>}
