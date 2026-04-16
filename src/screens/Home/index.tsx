@@ -9,10 +9,12 @@ import { useEffect } from 'react';
 import { View, Text, TouchableOpacity, FlatList } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { ListHeader } from './ListHeader';
+import { TransactionCard } from './TransactionCard';
 
 function Home() {
   const { handleLogout } = useAuthContext();
-  const { fetchCategories, fetchTransactions } = useTransactionContext();
+  const { fetchCategories, fetchTransactions, transactions } =
+    useTransactionContext();
   const { handleError } = useErrorHandler();
 
   const handleFetchCategories = async () => {
@@ -33,9 +35,10 @@ function Home() {
     <SafeAreaView className="flex-1 bg-background-primary">
       <FlatList
         className="bg-background-secondary"
+        data={transactions}
+        keyExtractor={({ id }) => `transaction-${id}`}
+        renderItem={({ item }) => <TransactionCard transaction={item} />}
         ListHeaderComponent={ListHeader}
-        data={[]}
-        renderItem={() => <></>}
       />
     </SafeAreaView>
   );
