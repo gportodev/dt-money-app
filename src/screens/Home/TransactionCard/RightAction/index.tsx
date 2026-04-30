@@ -53,6 +53,7 @@ function RightAction({ transactionId }: Params) {
         <MaterialIcons name="delete-outline" size={30} color={colors.white} />
       </TouchableOpacity>
       <DeleteModal
+        loading={loading}
         handleDeleteTransaction={handleDeleteTransaction}
         visible={modalVisible}
         hideModal={hideModal}
