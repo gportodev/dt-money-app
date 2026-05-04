@@ -4,6 +4,7 @@ import { Transaction } from '@/shared/interfaces/transaction';
 import { MaterialIcons } from '@expo/vector-icons';
 import { View } from 'react-native';
 import { Pressable } from 'react-native-gesture-handler';
+import { EditTransactionForm } from './EditTransactionForm';
 
 interface Params {
   transaction: Transaction;
@@ -15,7 +16,7 @@ function LeftAction({ transaction }: Params) {
   return (
     <Pressable
       onPress={() => {
-        openBottomSheet(<></>, 1);
+        openBottomSheet(<EditTransactionForm transaction={transaction} />, 1);
       }}
     >
       <View className="h-[140] bg-accent-blue-dark w-[80] rounded-l-[6] items-center justify-center">
