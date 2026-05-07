@@ -1,20 +1,19 @@
-import { AppHeader } from '@/components/AppHeader';
-import { useAuthContext } from '@/context/auth.context';
-import {
-  TransactionContext,
-  useTransactionContext,
-} from '@/context/transaction.context';
+import { useTransactionContext } from '@/context/transaction.context';
 import { useErrorHandler } from '@/shared/hooks/useErrorHandler';
 import { useEffect } from 'react';
-import { View, Text, TouchableOpacity, FlatList } from 'react-native';
+import { FlatList, RefreshControl } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { ListHeader } from './ListHeader';
 import { TransactionCard } from './TransactionCard';
 
 function Home() {
-  const { handleLogout } = useAuthContext();
-  const { fetchCategories, fetchTransactions, transactions } =
-    useTransactionContext();
+  const {
+    fetchCategories,
+    fetchTransactions,
+    transactions,
+    refreshTransactions,
+    loading,
+  } = useTransactionContext();
   const { handleError } = useErrorHandler();
 
   const handleFetchCategories = async () => {
@@ -39,6 +38,12 @@ function Home() {
         keyExtractor={({ id }) => `transaction-${id}`}
         renderItem={({ item }) => <TransactionCard transaction={item} />}
         ListHeaderComponent={ListHeader}
+        refreshControl={
+          <RefreshControl
+            refreshing={loading}
+            onRefresh={refreshTransactions}
+          />
+        }
       />
     </SafeAreaView>
   );
