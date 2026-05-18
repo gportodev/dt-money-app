@@ -53,14 +53,22 @@ export function TransactionContextProvider({ children }: PropsWithChildren) {
   });
 
   const refreshTransactions = async () => {
+    const { page, perPage } = pagination;
+
     setLoading(true);
     const transactionResponse = await transactionService.getTransactions({
       page: 1,
-      perPage: 10,
+      perPage: page * perPage,
     });
 
     setTransactions(transactionResponse.data);
     setTotalTransactions(transactionResponse.totalTransactions);
+    setPagination({
+      ...pagination,
+      page,
+      totalRows: transactionResponse.totalRows,
+      totalPages: transactionResponse.totalPages,
+    });
     setLoading(false);
   };
 
