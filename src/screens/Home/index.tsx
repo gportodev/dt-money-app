@@ -5,6 +5,7 @@ import { FlatList, RefreshControl } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { ListHeader } from './ListHeader';
 import { TransactionCard } from './TransactionCard';
+import { EmptyList } from './EmptyList';
 
 function Home() {
   const {
@@ -80,6 +81,7 @@ function Home() {
         renderItem={({ item }) => <TransactionCard transaction={item} />}
         ListHeaderComponent={ListHeader}
         onEndReached={handleLoadMoreTransactions}
+        ListEmptyComponent={loadings.initial ? null : EmptyList}
         onEndReachedThreshold={0.5}
         refreshControl={
           <RefreshControl
