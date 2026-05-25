@@ -4,6 +4,7 @@ import {
   PropsWithChildren,
   useCallback,
   useContext,
+  useMemo,
   useState,
 } from 'react';
 import * as transactionService from '@/shared/services/dt-money/transaction.service';
@@ -15,6 +16,13 @@ import {
   Filters,
   Pagination,
 } from '@/shared/interfaces/https/get-transactions-request';
+
+const filtersInitialValues = {
+  from: undefined,
+  to: undefined,
+  typeId: undefined,
+  categoryIds: {},
+};
 
 interface FetchTransactionsParams {
   page: number;
@@ -54,6 +62,7 @@ export type TransactionContextType = {
   handleFilters: (params: HandleFiltersParams) => void;
   filters: Filters;
   handleCategoryFilter: (categoryId: number) => void;
+  resetFilter: () => Promise<void>;
 };
 
 export const TransactionContext = createContext({} as TransactionContextType);
@@ -62,12 +71,7 @@ export function TransactionContextProvider({ children }: PropsWithChildren) {
   const [categories, setCategories] = useState<TransactionCategory[]>([]);
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [searchText, setSearchText] = useState('');
-  const [filters, setFilters] = useState<Filters>({
-    from: undefined,
-    to: undefined,
-    typeId: undefined,
-    categoryIds: {},
-  });
+  const [filters, setFilters] = useState<Filters>(filtersInitialValues);
   const [loadings, setLoadings] = useState<Loadings>({
     initial: false,
     refresh: false,
@@ -88,6 +92,14 @@ export function TransactionContextProvider({ children }: PropsWithChildren) {
     totalPages: 0,
   });
 
+  const categoryIds = useMemo(
+    () =>
+      Object.entries(filters.categoryIds)
+        .filter(([, value]) => value) // filtra apenas os ids das categorias que estão com o filtro ativo
+        .map(([key]) => Number(key)), // transforma os ids de string para number, já que as chaves do objeto são strings
+    [filters.categoryIds],
+  );
+
   const handleLoadings = ({ key, value }: HandleLoadingsParams) => {
     setLoadings(prevValues => ({
       ...prevValues,
@@ -101,6 +113,8 @@ export function TransactionContextProvider({ children }: PropsWithChildren) {
     const transactionResponse = await transactionService.getTransactions({
       page: 1,
       perPage: page * perPage,
+      ...filters,
+      categoryIds,
     });
 
     setTransactions(transactionResponse.data);
@@ -111,7 +125,7 @@ export function TransactionContextProvider({ children }: PropsWithChildren) {
       totalRows: transactionResponse.totalRows,
       totalPages: transactionResponse.totalPages,
     });
-  }, [pagination]);
+  }, [pagination, filters, categoryIds]);
 
   const fetchCategories = async () => {
     const categoriesResponse =
@@ -135,6 +149,8 @@ export function TransactionContextProvider({ children }: PropsWithChildren) {
         page,
         perPage: pagination.perPage,
         searchText,
+        ...filters,
+        categoryIds,
       });
 
       if (page === 1) {
@@ -154,7 +170,7 @@ export function TransactionContextProvider({ children }: PropsWithChildren) {
         totalPages: transactionResponse.totalPages,
       });
     },
-    [pagination, searchText],
+    [pagination, searchText, filters, categoryIds],
   );
 
   const loadMoreTransactions = useCallback(async () => {
@@ -180,6 +196,27 @@ export function TransactionContextProvider({ children }: PropsWithChildren) {
     }));
   };
 
+  const resetFilter = useCallback(async () => {
+    setFilters(filtersInitialValues);
+    setSearchText('');
+
+    const transactionResponse = await transactionService.getTransactions({
+      page: 1,
+      perPage: pagination.perPage,
+      searchText,
+      categoryIds: [],
+    });
+
+    setTransactions(transactionResponse.data);
+    setTotalTransactions(transactionResponse.totalTransactions);
+    setPagination({
+      ...pagination,
+      page: 1,
+      totalPages: transactionResponse.totalPages,
+      totalRows: transactionResponse.totalRows,
+    });
+  }, []);
+
   return (
     <TransactionContext.Provider
       value={{
@@ -200,6 +237,7 @@ export function TransactionContextProvider({ children }: PropsWithChildren) {
         filters,
         handleFilters,
         handleCategoryFilter,
+        resetFilter,
       }}
     >
       {children}
