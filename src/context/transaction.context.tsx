@@ -2,7 +2,6 @@ import { TransactionCategory } from '@/shared/interfaces/https/trasanction-categ
 import {
   createContext,
   PropsWithChildren,
-  use,
   useCallback,
   useContext,
   useState,
@@ -42,6 +41,8 @@ export type TransactionContextType = {
   loadings: Loadings;
   handleLoadings: (params: HandleLoadingsParams) => void;
   pagination: Pagination;
+  setSearchText: (text: string) => void;
+  searchText: string;
 };
 
 export const TransactionContext = createContext({} as TransactionContextType);
@@ -49,6 +50,7 @@ export const TransactionContext = createContext({} as TransactionContextType);
 export function TransactionContextProvider({ children }: PropsWithChildren) {
   const [categories, setCategories] = useState<TransactionCategory[]>([]);
   const [transactions, setTransactions] = useState<Transaction[]>([]);
+  const [searchText, setSearchText] = useState('');
   const [loadings, setLoadings] = useState<Loadings>({
     initial: false,
     refresh: false,
@@ -115,6 +117,7 @@ export function TransactionContextProvider({ children }: PropsWithChildren) {
       const transactionResponse = await transactionService.getTransactions({
         page,
         perPage: pagination.perPage,
+        searchText,
       });
 
       if (page === 1) {
@@ -134,7 +137,7 @@ export function TransactionContextProvider({ children }: PropsWithChildren) {
         totalPages: transactionResponse.totalPages,
       });
     },
-    [pagination],
+    [pagination, searchText],
   );
 
   const loadMoreTransactions = useCallback(async () => {
@@ -158,6 +161,8 @@ export function TransactionContextProvider({ children }: PropsWithChildren) {
         loadings,
         handleLoadings,
         pagination,
+        setSearchText,
+        searchText,
       }}
     >
       {children}
