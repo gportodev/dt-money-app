@@ -21,11 +21,35 @@ function TransactionCard({ amount, type }: Props) {
 
   const cardData = CARD_DATA[type];
 
-  const { transactions } = useTransactionContext();
+  const { transactions, filters } = useTransactionContext();
 
   const lasTransaction = transactions.find(
     ({ type: transactionType }) => transactionType.id === type,
   );
+
+  const renderDateInfo = () => {
+    if (type === 'total') {
+      return (
+        <Text className="text-white text-base">
+          {filters.from && filters.to
+            ? `${format(filters.from, 'd MMMM', { locale: ptBR })} até ${format(filters.to, 'd MMMM', { locale: ptBR })}`
+            : 'Todo período'}
+        </Text>
+      );
+    } else {
+      return (
+        <Text className="text-gray-700">
+          {lasTransaction?.createdAt
+            ? format(
+                lasTransaction?.createdAt,
+                `'Última ${cardData.label.toLocaleLowerCase()} em' d 'de' MMMM`,
+                { locale: ptBR },
+              )
+            : 'Nenhuma transação encontrada'}
+        </Text>
+      );
+    }
+  };
 
   return (
     <View
@@ -46,17 +70,8 @@ function TransactionCard({ amount, type }: Props) {
         <Text className="text-2xl text-gray-400 font-bold">
           R$ {moneyMapper(amount)}
         </Text>
-        {type !== 'total' && (
-          <Text className="text-gray-700">
-            {lasTransaction?.createdAt
-              ? format(
-                  lasTransaction?.createdAt,
-                  `'Última ${cardData.label.toLocaleLowerCase()} em' d 'de' MMMM`,
-                  { locale: ptBR },
-                )
-              : 'Nenhuma transação encontrada'}
-          </Text>
-        )}
+
+        {renderDateInfo()}
       </View>
     </View>
   );

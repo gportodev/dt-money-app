@@ -4,6 +4,7 @@ import { MaterialIcons } from '@expo/vector-icons';
 import React from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import { DateFilter } from './DateFilter';
+import { CategoryFilter } from './CategoryFilter';
 
 function TransactionsFilters() {
   const { closeBottomSheet } = useBottomSheetContext();
@@ -20,6 +21,8 @@ function TransactionsFilters() {
       </View>
 
       <DateFilter />
+
+      <CategoryFilter />
     </View>
   );
 }
