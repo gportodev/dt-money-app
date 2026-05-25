@@ -5,7 +5,7 @@ import { MaterialIcons } from '@expo/vector-icons';
 import clsx from 'clsx';
 import { format } from 'date-fns';
 import { Text, View } from 'react-native';
-import Swipeable from 'react-native-gesture-handler/ReanimatedSwipeable';
+import Swipeable from 'react-native-gesture-handler/Swipeable';
 import { RightAction } from './RightAction';
 import { LeftAction } from './LeftAction';
 import { moneyMapper } from '@/utils/money-mapper';
