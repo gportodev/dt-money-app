@@ -5,6 +5,7 @@ import React from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import { DateFilter } from './DateFilter';
 import { CategoryFilter } from './CategoryFilter';
+import { TypeFilter } from './TypeFilter';
 
 function TransactionsFilters() {
   const { closeBottomSheet } = useBottomSheetContext();
@@ -23,6 +24,8 @@ function TransactionsFilters() {
       <DateFilter />
 
       <CategoryFilter />
+
+      <TypeFilter />
     </View>
   );
 }
